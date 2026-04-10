@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>برنامج الحفظ</title>
+
+<style>
+body{
+    font-family:Tahoma;
+    text-align:center;
+    background:#f5e6c8;
+    padding:20px;
+}
+
+h1{
+    color:#8b6f00;
+    margin-bottom:30px;
+}
+
+.student{
+    background:white;
+    padding:15px;
+    margin:10px auto;
+    width:220px;
+    border-radius:15px;
+    cursor:pointer;
+    font-size:18px;
+    box-shadow:0 4px 8px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.student:hover{
+    background:gold;
+    transform:scale(1.05);
+}
+</style>
+</head>
+
+<body>
+
+<h1>📚 قائمة الطلاب</h1>
+
+<div class="student" onclick="go('ahmed')">👦 أحمد</div>
+<div class="student" onclick="go('fatima')">👧 فاطمة</div>
+<div class="student" onclick="go('hamid')">👦 حميد</div>
+
+<script>
+function go(name){
+    window.location.href = "student.html?name=" + name;
+}
+</script>
+
+</body>
+</html>
