@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>خريطة الحفظ</title>
+
+<style>
+body{
+    font-family:Tahoma;
+    background:#f4e7c5;
+    text-align:center;
+    padding:20px;
+}
+
+h1{
+    color:#8b6f00;
+}
+
+/* زر رجوع */
+.back{
+    margin-bottom:15px;
+    cursor:pointer;
+    color:#555;
+}
+
+/* المسار */
+.path{
+    position:relative;
+    max-width:800px;
+    margin:30px auto;
+}
+
+/* الطريق */
+.path::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    width:60px;
+    height:100%;
+    background:#222;
+    border-radius:40px;
+    z-index:0;
+}
+
+/* الصف */
+.row{
+    display:flex;
+    justify-content:space-between;
+    margin:40px 0;
+    position:relative;
+    z-index:1;
+}
+
+.row.reverse{
+    flex-direction:row-reverse;
+}
+
+/* النجمة */
+.surah{
+    width:80px;
+    text-align:center;
+    cursor:pointer;
+}
+
+.star{
+    font-size:28px;
+    color:#bbb;
+    transition:0.3s;
+}
+
+.name{
+    font-size:11px;
+    margin-top:5px;
+}
+
+/* عند الإنجاز */
+.completed .star{
+    color:gold;
+    text-shadow:0 0 10px gold;
+}
+
+.surah:hover{
+    transform:scale(1.2);
+}
+</style>
+</head>
+
+<body>
+
+<div class="back" onclick="goBack()">⬅ رجوع</div>
+
+<h1 id="studentName"></h1>
+
+<div class="path" id="path"></div>
+
+<script>
+
+/* أسماء السور */
+const surahs = [
+"الناس","الفلق","الإخلاص","المسد","النصر","الكافرون",
+"الكوثر","الماعون","قريش","الفيل","الهمزة","العصر",
+"التكاثر","القارعة","العاديات","الزلزلة","البينة","القدر",
+"العلق","التين","الشرح","الضحى","الليل","الشمس",
+"البلد","الفجر","الغاشية","الأعلى","الطارق","البروج",
+"الإنشقاق","المطففين","الإنفطار","التكوير","عبس","النازعات","النبأ"
+];
+
+/* اسم الطالب */
+const params = new URLSearchParams(window.location.search);
+const student = params.get("name");
+
+document.getElementById("studentName").textContent = "⭐ " + student;
+
+/* تحميل التقدم */
+let completed = JSON.parse(localStorage.getItem(student)) || [];
+
+const path = document.getElementById("path");
+
+function render(){
+    path.innerHTML = "";
+    const perRow = 3;
+    let rowIndex = 0;
+
+    for(let i=0;i<surahs.length;i+=perRow){
+
+        const row = document.createElement("div");
+        row.classList.add("row");
+
+        if(rowIndex % 2 !== 0){
+            row.classList.add("reverse");
+        }
+
+        surahs.slice(i,i+perRow).forEach((name,index)=>{
+
+            const realIndex = i+index;
+
+            const div = document.createElement("div");
+            div.classList.add("surah");
+
+            const star = document.createElement("div");
+            star.classList.add("star");
+            star.textContent = "★";
+
+            const label = document.createElement("div");
+            label.classList.add("name");
+            label.textContent = name;
+
+            div.appendChild(star);
+            div.appendChild(label);
+
+            if(completed.includes(realIndex)){
+                div.classList.add("completed");
+            }
+
+            div.addEventListener("click",()=>{
+
+                if(completed.includes(realIndex)){
+                    completed = completed.filter(i=>i!==realIndex);
+                }else{
+                    completed.push(realIndex);
+                }
+
+                localStorage.setItem(student, JSON.stringify(completed));
+
+                render();
+            });
+
+            row.appendChild(div);
+        });
+
+        path.appendChild(row);
+        rowIndex++;
+    }
+}
+
+/* رجوع */
+function goBack(){
+    window.location.href = "index.html";
+}
+
+render();
+
+</script>
+
+</body>
+</html>
